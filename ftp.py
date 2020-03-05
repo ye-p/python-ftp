@@ -4,11 +4,6 @@ import pdb
 from ftplib import FTP
 from setup.setup import *
 
-host = ""
-username = ""
-password = ""
-basepath = r''
-
 # 対象のホストにアクセスしてログイン
 ftp = FTP(
     host,
@@ -18,44 +13,29 @@ ftp = FTP(
 
 # サーバー上のカレントディレクトリの一覧を取得
 print(os.getcwd())
-
 myPath = basepath
-def uploadDir(path):
-    # files = os.listdir(path)
-    print os.listdir(path)
-    now = os.getcwd()
-    hoge = os.chdir(path)
-    print path
-    # print files
-    print now
-    print hoge
-    for f in files:
-        dir = os.path.isdir(path + r'/{}'.format(f))
-        print "=========="
-        print dir
-        print f
-        # 対象のディレクトリがなければ作成
-        if os.path.isdir(path + r'/{}'.format(f)):
-            ftp.mkd(f)
-            # 権限変更
-            ftp.sendcmd("site chmod 777" .os.path.isdir(path + r'/{}'.format(f)))
 
-            # ftp.sendcmd("site chmod 777 subdir")
-        # subdirが作成できたか確認
-        # ftp.dir()
+def uploadDir(path):
+    files = os.listdir(path)
+    os.chdir(path)
+
+    for f in files:
+        # 対象のファイル・ディレクトリがなければ作成
+        if os.path.isfile(path + r'/{}'.format(f)):
+            fh = open(f, 'rb')
+            ftp.storbinary('STOR %s' % f, fh)
+            fh.close()
+        elif os.path.isdir(path + r'/{}'.format(f)):
+            ftp.mkd(f)
+            ftp.cwd(f)
+            # ディレクトリ配下のファイル・ディレクトリもアップロード
+            uploadDir(path + r'/{}'.format(f))
+    ftp.cwd('..')
+    ftp.dir()
+    os.chdir('..')
 
 uploadDir(myPath)
-# subdirの一覧を参照する
-#ftp.cwd('subdir')
-#ftp.dir()
-
-# ファイルを転送する
-#with open("a.txt", "rb") as f:
-#    ftp.storlines("STOR a.txt", f)
-
-# 転送できたか確認
-#ftp.dir()
 
 # FTPサーバとの切断
-#ftp.quit()
+ftp.quit()
 
