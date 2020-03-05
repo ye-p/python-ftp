@@ -15,16 +15,18 @@ ftp = FTP(
     username,
     password
 )
+
 # サーバー上のカレントディレクトリの一覧を取得
-ftp.dir()
+print(os.getcwd())
 
 myPath = basepath
 def uploadDir(path):
-    files = os.listdir(path)
+    # files = os.listdir(path)
+    print os.listdir(path)
     now = os.getcwd()
     hoge = os.chdir(path)
     print path
-    print files
+    # print files
     print now
     print hoge
     for f in files:
@@ -55,5 +57,5 @@ uploadDir(myPath)
 #ftp.dir()
 
 # FTPサーバとの切断
-ftp.quit()
+#ftp.quit()
 
