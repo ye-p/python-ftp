@@ -2,6 +2,7 @@
 import os
 import pdb
 from ftplib import FTP
+from setup.setup import *
 
 host = ""
 username = ""
@@ -14,10 +15,8 @@ ftp = FTP(
     username,
     password
 )
-print ftp
 # サーバー上のカレントディレクトリの一覧を取得
 ftp.dir()
-ftp.rmd("hogedir")
 
 myPath = basepath
 def uploadDir(path):
