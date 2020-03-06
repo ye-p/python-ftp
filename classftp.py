@@ -12,41 +12,47 @@ class FtpUpload():
         username,
         password
     )
+    files = os.listdir(basepath)
+    uploadPath = basepath + '/{}'.format(files)
 
     def echoPath(self):
-        print self.basepath
+        print basepath
 
     def nowDir(self):
         print self.ftp.dir()
 
-    def uploadInFTP(self):
-        files = os.listdir(self.basepath)
-        os.chdir(self.basepath)
+    def isFile(self):
+        if os.path.isfile(self.uploadPath):
+            fh = open(self.files, 'rb')
+            ftp.storbinary('STOR %s' % self.files, fh)
+            fh.close()
 
-        for f in files:
-            # 対象のファイル・ディレクトリがなければ作成
-           if os.path.isfile(self.basepath + r'/{}'.format(f)):
-               fh = open(f, 'rb')
-               self.ftp.storbinary('STOR %s' % f, fh)
-               fh.close()
-           elif os.path.isdir(self.basepath + r'/{}'.format(f)):
-               self.ftp.mkd(f)
-               self.ftp.cwd(f)
-               # ディレクトリ配下のファイル・ディレクトリもアップロード
-               uploadInFTP(self.basepath + r'/{}'.format(f))
-        self.ftp.cwd('..')
-        self.ftp.dir()
-        os.chdir('..')
+    def isDir(self):
+        if os.path.isdir(self.uploadPath):
+            self.ftp.mkd(self.files)
+            self.ftp.cwd(self.files)
 
-        #uploadInFTP(self.basepath)
+    def FTPUpload(uploadFile,uploadDir):
+        os.chdir(basepath)
+        for f in self.files:
+            print f
+            return uploadFile(f)
+            return UploadDir(f)
+
+            #    ディレクトリ配下のファイル・ディレクトリもアップロード
+            #    uploadInFTP(self.uploadPath)
 
     # FTPサーバとの切断
     def quit(self):
         self.ftp.quit
 
+    #print uploadInFTP(getFiles)
+
 ftpUpload = FtpUpload()
-ftpUpload.echoPath()
-ftpUpload.uploadInFTP()
-ftpUpload.nowDir()
+#ftpUpload.echoPath()
+ftpUpload.isFile()
+ftpUpload.isDir()
+ftpUpload.FTPUpload(isFile,isDir)
+#ftpUpload.nowDir()
 ftpUpload.quit()
 
