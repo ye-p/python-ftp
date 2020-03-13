@@ -67,3 +67,4 @@ print ftp().isDirectry(basepath) # directry exits
             #サーバーにファイルをアップロード
         #未処理のファイル・ディレクトリが存在する
 #FTP接続を終了
+
