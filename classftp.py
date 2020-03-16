@@ -15,7 +15,7 @@ class ftp:
 
     # (1)クライアントのアップロード対象のファイル・ディレクトリを全て取得
     def getAllFilesAndDirectries(self):
-        self.getAll = os.walk(basepath)
+        self.walk = os.walk(basepath)
         return self
 
     # 取得したものがディレクトリである
@@ -24,8 +24,7 @@ class ftp:
 
     # サーバーにディレクトリを作成
     def makeDirectry(self, directryName):
-        ftp = FTP(host, username, password)
-        return ftp.mkd(directryName)
+        return self.ftp.mkd(directryName)
 
     # 未処理のファイル・ディレクトリが存在する
     def unUploadFilesOrDirectries(self, func):
@@ -43,19 +42,16 @@ class ftp:
 
     # ファイルを開く 
     def openFile(self, filePath):
-        fh = open(basepath + filePath, 'rb')
+        self.fh = open(basepath + filePath, 'rb')
         return self
 
     # ファイルをアップロード
-    def uploadFile(self,  filePath):
-        ftp = FTP(host, username, password)
-        fh = open(basepath + filePath, 'rb')
-        return ftp.storbinary('STOR %s' % basepath + filePath, fh)
+    def uploadFile(self, filePath):
+        return self.ftp.storbinary('STOR %s' % basepath + filePath, self.fh)
 
     # ファイルを閉じる
-    def closeFile(self, filePath):
-        fh = open(basepath + filePath, 'rb')
-        return fh.close()
+    def closeFile(self):
+        return self.fh.close()
 
     # 未処理のファイル・ディレクトリが存在する
 
@@ -63,30 +59,29 @@ class ftp:
 
     # FTP接続を終了
     def quitFtp(self):
-        ftp = FTP(host, username, password)
-        return ftp.quit()
-    
+        return self.ftp.quit()
 
 # ================================
 #   Function call
 # ================================
 
-print ftp().connect().ftp # OK 
-print ftp().getAllFilesAndDirectries().getAll # OK 
-print ftp().isDirectry('hogehoge/') # not found directry → OK
-print ftp().isDirectry(basepath + 'hogetext.txt') # file exits(not directry) → OK
-print ftp().isDirectry(basepath + 'dir') # directry exits → OK
-print ftp().makeDirectry('dir') # OK
-print ftp().unUploadFilesOrDirectries(ftp().isDirectry(basepath + 'dir')) # NG 
+ftp = ftp()
+print ftp.connect().ftp # OK 
+print ftp.getAllFilesAndDirectries().walk # OK 
+print ftp.isDirectry('hogehoge/') # not found directry → OK
+print ftp.isDirectry(basepath + 'hogetext.txt') # file exits(not directry) → OK
+print ftp.isDirectry(basepath + 'dir') # directry exits → OK
+#print ftp.makeDirectry('dir') # OK
+print ftp.unUploadFilesOrDirectries(ftp.isDirectry(basepath + 'dir')) # NG 
 
-print ftp().getAllFilesAndDirectries().getAll # OK 
-print ftp().isFile('hogehoge/') # directry exits(not file) → OK
-print ftp().isFile(basepath + 'hogetext.txt') # not foubnd file → OK
-print ftp().isFile(basepath + 'dir.py') # file exits → OK
-print ftp().openFile('dir.py') # OK
+print ftp.getAllFilesAndDirectries().walk # OK 
+print ftp.isFile('hogehoge/') # directry exits(not file) → OK
+print ftp.isFile(basepath + 'hogetext.txt') # not foubnd file → OK
+print ftp.isFile(basepath + 'dir.py') # file exits → OK
+print ftp.openFile('dir.py') # OK
 
-print ftp().uploadFile('dir.py') # NG
+#print ftp.uploadFile('dir.py') # NG
 
-print ftp().closeFile('dir.py') # OK
+print ftp.closeFile() # OK
 print ftp.quitFtp() # OK
 
