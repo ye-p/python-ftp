@@ -13,27 +13,59 @@ class ftp:
         self.ftp = FTP(host, username, password)
         return self
 
-    #(1)クライアントのアップロード対象のファイル・ディレクトリを全て取得
+    # (1)クライアントのアップロード対象のファイル・ディレクトリを全て取得
     def getAllFilesAndDirectries(self):
         self.getAll = os.walk(basepath)
         return self
 
-    #取得したものがディレクトリである
+    # 取得したものがディレクトリである
     def isDirectry(self, directryPath):
         return os.path.isdir(directryPath)   
 
-    #サーバーにディレクトリを作成
+    # サーバーにディレクトリを作成
     def makeDirectry(self, directryName):
-        self.ftp = FTP(host, username, password)
-        return self.ftp.mkd(directryName)
+        ftp = FTP(host, username, password)
+        return ftp.mkd(directryName)
 
-    #未処理のファイル・ディレクトリが存在する
+    # 未処理のファイル・ディレクトリが存在する
     def unUploadFilesOrDirectries(self, func):
         #self.getAll = os.walk(basepath)
         print basepath
         return self
 
+    # (1)の次ループへ
 
+    # (2)クライアントのアップロード対象のファイル・ディレクトリを全て取得
+
+    # 取得したものがファイルである
+    def isFile(self, filePath):
+        return os.path.isfile(filePath)   
+
+    # ファイルを開く 
+    def openFile(self, filePath):
+        fh = open(basepath + filePath, 'rb')
+        return self
+
+    # ファイルをアップロード
+    def uploadFile(self,  filePath):
+        ftp = FTP(host, username, password)
+        fh = open(basepath + filePath, 'rb')
+        return ftp.storbinary('STOR %s' % basepath + filePath, fh)
+
+    # ファイルを閉じる
+    def closeFile(self, filePath):
+        fh = open(basepath + filePath, 'rb')
+        return fh.close()
+
+    # 未処理のファイル・ディレクトリが存在する
+
+    # (2)の次ループへ
+
+    # FTP接続を終了
+    def quitFtp(self):
+        ftp = FTP(host, username, password)
+        return ftp.quit()
+    
 
 # ================================
 #   Function call
@@ -41,22 +73,20 @@ class ftp:
 
 print ftp().connect().ftp # OK 
 print ftp().getAllFilesAndDirectries().getAll # OK 
-print ftp().isDirectry('hogehoge/') # directry does not exits → OK
-print ftp().isDirectry('hogtext.txt') # file exits(not directry) → OK
-print ftp().isDirectry('./upload/') # directry exits → OK
-#print ftp().makeDirectry('dir') # OK
-print ftp().unUploadFilesOrDirectries(ftp().isDirectry(basepath)) # NG 
-#print ftp().unUploadFilesOrDirectries() # NG 
+print ftp().isDirectry('hogehoge/') # not found directry → OK
+print ftp().isDirectry(basepath + 'hogetext.txt') # file exits(not directry) → OK
+print ftp().isDirectry(basepath + 'dir') # directry exits → OK
+print ftp().makeDirectry('dir') # OK
+print ftp().unUploadFilesOrDirectries(ftp().isDirectry(basepath + 'dir')) # NG 
 
-# ================================
-#   Comment to make functions
-# ================================
+print ftp().getAllFilesAndDirectries().getAll # OK 
+print ftp().isFile('hogehoge/') # directry exits(not file) → OK
+print ftp().isFile(basepath + 'hogetext.txt') # not foubnd file → OK
+print ftp().isFile(basepath + 'dir.py') # file exits → OK
+print ftp().openFile('dir.py') # OK
 
-            # (1)の次ループへ
-    #(2)クライアントのアップロード対象のファイル・ディレクトリを全て取得
-        #取得したものがファイルである
-            #サーバーにファイルをアップロード
-        #未処理のファイル・ディレクトリが存在する
-            # (2)の次ループへ
-#FTP接続を終了
+print ftp().uploadFile('dir.py') # NG
+
+print ftp().closeFile('dir.py') # OK
+print ftp.quitFtp() # OK
 
