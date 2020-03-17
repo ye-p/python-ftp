@@ -42,12 +42,12 @@ class ftp:
 
     # ファイルを開く 
     def openFile(self, filePath):
-        self.fh = open(basepath + filePath, 'rb')
+        self.fh = open(filePath, 'rb')
         return self
 
     # ファイルをアップロード
     def uploadFile(self, filePath):
-        return self.ftp.storbinary('STOR %s' % basepath + filePath, self.fh)
+        return self.ftp.storbinary('STOR %s' % filePath, self.fh)
 
     # ファイルを閉じる
     def closeFile(self):
@@ -67,6 +67,14 @@ class ftp:
         for dirpath, dirname, filename in self.walk:
             if self.isDirectry(dirpath):
                 self.makeDirectry(dirpath)
+            for fName in filename:
+                f = dirpath + '/{}'.format(fName)
+                if self.isFile(f):
+                    self.openFile(f)
+                    self.uploadFile(f)
+                    self.closeFile()
+
+        self.quitFtp()
     
 ftp = ftp()
 ftp.main() 
