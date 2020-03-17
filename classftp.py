@@ -61,27 +61,37 @@ class ftp:
     def quitFtp(self):
         return self.ftp.quit()
 
+    def main(self):
+        self.connect().getAllFilesAndDirectries()
+    
+        for dirpath, dirname, filename in self.walk:
+            if self.isDirectry(dirpath):
+                self.makeDirectry(dirpath)
+    
+ftp = ftp()
+ftp.main() 
+
 # ================================
 #   Function call
 # ================================
 
-ftp = ftp()
-print ftp.connect().ftp # OK 
-print ftp.getAllFilesAndDirectries().walk # OK 
-print ftp.isDirectry('hogehoge/') # not found directry → OK
-print ftp.isDirectry(basepath + 'hogetext.txt') # file exits(not directry) → OK
-print ftp.isDirectry(basepath + 'dir') # directry exits → OK
-#print ftp.makeDirectry('dir') # OK
-print ftp.unUploadFilesOrDirectries(ftp.isDirectry(basepath + 'dir')) # NG 
+# ftp = ftp()
+# print ftp.connect().ftp # OK 
+# print ftp.getAllFilesAndDirectries().walk # OK 
+# print ftp.isDirectry('hogehoge/') # not found directry → OK
+# print ftp.isDirectry(basepath + 'hogetext.txt') # file exits(not directry) → OK
+# print ftp.isDirectry(basepath + 'dir') # directry exits → OK
+# print ftp.makeDirectry('dir') # OK
+# print ftp.unUploadFilesOrDirectries(ftp.isDirectry(basepath + 'dir')) # NG 
 
-print ftp.getAllFilesAndDirectries().walk # OK 
-print ftp.isFile('hogehoge/') # directry exits(not file) → OK
-print ftp.isFile(basepath + 'hogetext.txt') # not foubnd file → OK
-print ftp.isFile(basepath + 'dir.py') # file exits → OK
-print ftp.openFile('dir.py') # OK
+# print ftp.getAllFilesAndDirectries().walk # OK 
+# print ftp.isFile('hogehoge/') # directry exits(not file) → OK
+# print ftp.isFile(basepath + 'hogetext.txt') # not foubnd file → OK
+# print ftp.isFile(basepath + 'dir.py') # file exits → OK
+# print ftp.openFile('dir.py') # OK
 
-#print ftp.uploadFile('dir.py') # NG
+# print ftp.uploadFile('dir.py') # NG
 
-print ftp.closeFile() # OK
-print ftp.quitFtp() # OK
+# print ftp.closeFile() # OK
+# print ftp.quitFtp() # OK
 
