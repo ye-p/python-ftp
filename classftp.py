@@ -27,11 +27,6 @@ class ftp:
         return self.ftp.mkd(directryName)
 
     # 未処理のファイル・ディレクトリが存在する
-    def unUploadFilesOrDirectries(self, func):
-        #self.getAll = os.walk(basepath)
-        print basepath
-        return self
-
     # (1)の次ループへ
 
     # (2)クライアントのアップロード対象のファイル・ディレクトリを全て取得
@@ -54,7 +49,6 @@ class ftp:
         return self.fh.close()
 
     # 未処理のファイル・ディレクトリが存在する
-
     # (2)の次ループへ
 
     # FTP接続を終了
@@ -64,15 +58,28 @@ class ftp:
     def main(self):
         self.connect().getAllFilesAndDirectries()
     
+#        for dirpath, dirname, filename in self.walk:
+#            if self.isDirectry(dirpath):
+#                print dirpath,"をアップロード中..."
+#                self.makeDirectry(dirpath)
+#                print dirpath,"をアップロードしました"
+#
+#        for dirpath, dirname, filename in self.walk:
+#            for fName in filename:
+#                f = dirpath + '/{}'.format(fName)
+#                if self.isFile(f):
+#                    self.openFile(f)
+#                    print f,"をアップロード中..."
+#                    self.uploadFile(f)
+#                    print f,"をアップロードしました"
+#                    self.closeFile()
+#
+
+        for d in self.walk:
+            print d
+
         for dirpath, dirname, filename in self.walk:
-            if self.isDirectry(dirpath):
-                self.makeDirectry(dirpath)
-            for fName in filename:
-                f = dirpath + '/{}'.format(fName)
-                if self.isFile(f):
-                    self.openFile(f)
-                    self.uploadFile(f)
-                    self.closeFile()
+            print dirpath
 
         self.quitFtp()
     
@@ -90,7 +97,6 @@ ftp.main()
 # print ftp.isDirectry(basepath + 'hogetext.txt') # file exits(not directry) → OK
 # print ftp.isDirectry(basepath + 'dir') # directry exits → OK
 # print ftp.makeDirectry('dir') # OK
-# print ftp.unUploadFilesOrDirectries(ftp.isDirectry(basepath + 'dir')) # NG 
 
 # print ftp.getAllFilesAndDirectries().walk # OK 
 # print ftp.isFile('hogehoge/') # directry exits(not file) → OK
