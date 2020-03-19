@@ -58,28 +58,23 @@ class ftp:
     def main(self):
         self.connect().getAllFilesAndDirectries()
     
-#        for dirpath, dirname, filename in self.walk:
-#            if self.isDirectry(dirpath):
-#                print dirpath,"をアップロード中..."
-#                self.makeDirectry(dirpath)
-#                print dirpath,"をアップロードしました"
-#
-#        for dirpath, dirname, filename in self.walk:
-#            for fName in filename:
-#                f = dirpath + '/{}'.format(fName)
-#                if self.isFile(f):
-#                    self.openFile(f)
-#                    print f,"をアップロード中..."
-#                    self.uploadFile(f)
-#                    print f,"をアップロードしました"
-#                    self.closeFile()
-#
+        for dirpath, dirname, filename in self.walk:
+            if self.isDirectry(dirpath):
+                print "ディレクトリ",dirpath,"をアップロード中..."
+                self.makeDirectry(dirpath)
+                print "ディレクトリ",dirpath,"をアップロードしました"
 
-        for d in self.walk:
-            print d
+        self.walk = os.walk(basepath)
 
         for dirpath, dirname, filename in self.walk:
-            print dirpath
+            for fName in filename:
+                f = dirpath + '/{}'.format(fName)
+                if self.isFile(f):
+                    self.openFile(f)
+                    print "ファイル",f,"をアップロード中..."
+                    self.uploadFile(f)
+                    print "ファイル",f,"をアップロードしました"
+                    self.closeFile()
 
         self.quitFtp()
     
